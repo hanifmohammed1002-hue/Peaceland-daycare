@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Peace Land Learning Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --green-dark:  #1a6b3c;
+      --green-mid:   #2d9e5f;
+      --green-light: #4ecb8d;
+      --teal:        #1b9aaa;
+      --sky:         #c8f0f8;
+      --cream:       #f5f0e8;
+      --gold:        #f4b942;
+      --coral:       #f06e6e;
+      --purple:      #7c4dbd;
+      --white:       #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--cream);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ─── CUSTOM CURSOR ─────────────────────────── */
+    #cursor-ring {
+      position: fixed;
+      top: 0; left: 0;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      border: 3px solid var(--green-mid);
+      background: rgba(78,203,141,.15);
+      backdrop-filter: blur(2px);
+      pointer-events: none;
+      transform: translate(-50%,-50%);
+      transition: width .25s, height .25s, background .25s, border-color .25s;
+      z-index: 9999;
+      mix-blend-mode: multiply;
+    }
+    #cursor-dot {
+      position: fixed;
+      top: 0; left: 0;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green-dark);
+      pointer-events: none;
+      transform: translate(-50%,-50%);
+      z-index: 10000;
+      transition: width .1s, height .1s;
+    }
+    body.hovering #cursor-ring {
+      width: 70px; height: 70px;
+      background: rgba(244,185,66,.25);
+      border-color: var(--gold);
+    }
+
+    /* ─── HERO ──────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #e8f8f0 0%, #d0f0e4 40%, #c8eef8 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 80px 20px 60px;
+    }
+
+    /* floating shapes */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: .35;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .blob-1 { width:500px; height:500px; background:var(--green-light); top:-150px; left:-150px; animation-delay:0s; }
+    .blob-2 { width:400px; height:400px; background:var(--teal);        bottom:-120px; right:-120px; animation-delay:-5s; }
+    .blob-3 { width:300px; height:300px; background:var(--gold);        top:40%; left:60%; animation-delay:-9s; }
+
+    @keyframes drift {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(40px,30px) scale(1.08); }
+    }
+
+    /* alphabet strip */
+    .alpha-strip {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .alpha-chip {
+      width: 38px; height: 38px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: .85rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,.15);
+      animation: bobble 3s ease-in-out infinite;
+    }
+    .alpha-chip:nth-child(odd)  { background: var(--green-mid);  color:#fff; animation-delay: 0s; }
+    .alpha-chip:nth-child(even) { background: var(--gold);       color:#fff; animation-delay: .4s; }
+    .alpha-chip:nth-child(3n)   { background: var(--teal);       color:#fff; animation-delay: .8s; }
+    .alpha-chip:nth-child(4n)   { background: var(--coral);      color:#fff; animation-delay:1.2s; }
+    .alpha-chip:nth-child(5n)   { background: var(--purple);     color:#fff; animation-delay:1.6s; }
+
+    @keyframes bobble {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+
+    /* logo */
+    .logo-wrap {
+      position: relative;
+      z-index: 2;
+      margin-bottom: 18px;
+    }
+    .logo-circle {
+      width: 110px; height: 110px;
+      background: linear-gradient(135deg, var(--green-dark), var(--green-light));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px;
+      box-shadow: 0 12px 40px rgba(26,107,60,.35), 0 2px 8px rgba(0,0,0,.12);
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0) rotate(-2deg); }
+      50%      { transform: translateY(-12px) rotate(2deg); }
+    }
+    .logo-circle svg { width:65px; height:65px; }
+
+    .brand-name {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(2.8rem, 8vw, 5rem);
+      font-weight: 800;
+      color: var(--green-dark);
+      line-height: 1;
+      text-shadow: 0 4px 0 rgba(26,107,60,.18), 0 8px 24px rgba(26,107,60,.12);
+      position: relative; z-index: 2;
+    }
+    .brand-sub {
+      display: inline-block;
+      background: linear-gradient(90deg, var(--green-mid), var(--teal));
+      color: #fff;
+      padding: 6px 28px;
+      border-radius: 50px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 10px 0;
+      box-shadow: 0 6px 20px rgba(45,158,95,.3);
+      position: relative; z-index: 2;
+    }
+    .location-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(8px);
+      border: 2px solid var(--teal);
+      border-radius: 50px;
+      padding: 6px 20px;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--teal);
+      margin: 8px 0 24px;
+      position: relative; z-index: 2;
+    }
+
+    /* COMING SOON text */
+    .coming-soon {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(3.5rem, 12vw, 7.5rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--teal) 0%, var(--green-dark) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      position: relative; z-index: 2;
+      filter: drop-shadow(0 8px 16px rgba(27,154,170,.3));
+      animation: shimmer 3s linear infinite;
+      background-size: 200% 100%;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* ─── INFO CARDS SECTION ───────────────────── */
+    #info {
+      padding: 80px 20px;
+      background: linear-gradient(180deg, #e0f5ea 0%, #f5f0e8 100%);
+    }
+    .section-title {
+      text-align: center;
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      color: var(--green-dark);
+      margin-bottom: 50px;
+      position: relative;
+    }
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 70px; height: 5px;
+      background: linear-gradient(90deg, var(--green-mid), var(--teal));
+      border-radius: 10px;
+      margin: 12px auto 0;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 30px;
+      max-width: 1100px;
+      margin: 0 auto;
+      perspective: 1200px;
+    }
+
+    .info-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 38px 30px;
+      box-shadow: 0 8px 30px rgba(26,107,60,.10), 0 2px 8px rgba(0,0,0,.06);
+      position: relative;
+      overflow: hidden;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1),
+                  box-shadow .35s ease;
+      transform-style: preserve-3d;
+      cursor: default;
+      border-bottom: 5px solid transparent;
+    }
+    .info-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(78,203,141,.08), rgba(27,154,170,.08));
+      opacity: 0;
+      transition: opacity .3s;
+    }
+    .info-card:hover, .info-card.active {
+      transform: translateY(-18px) rotateX(4deg) scale(1.03);
+      box-shadow: 0 28px 60px rgba(26,107,60,.22), 0 8px 20px rgba(0,0,0,.10);
+    }
+    .info-card:hover::before, .info-card.active::before { opacity: 1; }
+
+    .info-card.card-green  { border-color: var(--green-mid); }
+    .info-card.card-teal   { border-color: var(--teal); }
+    .info-card.card-gold   { border-color: var(--gold); }
+    .info-card.card-coral  { border-color: var(--coral); }
+    .info-card.card-purple { border-color: var(--purple); }
+
+    .card-icon {
+      width: 62px; height: 62px;
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 18px;
+      box-shadow: 0 6px 16px rgba(0,0,0,.12);
+    }
+    .card-green  .card-icon { background: linear-gradient(135deg,#4ecb8d,#2d9e5f); }
+    .card-teal   .card-icon { background: linear-gradient(135deg,#1b9aaa,#0e7084); }
+    .card-gold   .card-icon { background: linear-gradient(135deg,#f4b942,#e09020); }
+    .card-coral  .card-icon { background: linear-gradient(135deg,#f06e6e,#d04040); }
+    .card-purple .card-icon { background: linear-gradient(135deg,#7c4dbd,#5a30a0); }
+
+    .card-title {
+      font-family: 'Baloo 2', cursive;
+      font-size: 1.3rem;
+      color: var(--green-dark);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .card-body {
+      font-size: .97rem;
+      color: #555;
+      line-height: 1.65;
+    }
+    .card-body strong { color: var(--green-dark); }
+
+    /* 3-D shimmer bar */
+    .card-shimmer {
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.45) 50%, transparent 60%);
+      background-size: 200% 100%;
+      background-position: -100% 0;
+      transition: background-position .5s ease;
+      pointer-events: none;
+    }
+    .info-card:hover .card-shimmer,
+    .info-card.active .card-shimmer {
+      background-position: 200% 0;
+    }
+
+    /* ─── ENROLLMENT STRIP ─────────────────────── */
+    #enroll {
+      background: linear-gradient(135deg, var(--green-dark), var(--teal));
+      padding: 70px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    #enroll::before {
+      content: '✦';
+      position: absolute;
+      font-size: 18rem;
+      color: rgba(255,255,255,.04);
+      top: -60px; left: -60px;
+    }
+    #enroll::after {
+      content: '✦';
+      position: absolute;
+      font-size: 14rem;
+      color: rgba(255,255,255,.04);
+      bottom: -40px; right: -40px;
+    }
+    .enroll-title {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    .enroll-body {
+      max-width: 650px;
+      margin: 0 auto 32px;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,.88);
+      line-height: 1.7;
+    }
+    .enroll-btn {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--green-dark);
+      font-family: 'Baloo 2', cursive;
+      font-size: 1.15rem;
+      font-weight: 800;
+      padding: 16px 48px;
+      border-radius: 50px;
+      text-decoration: none;
+      border: none;
+      cursor: none;
+      box-shadow: 0 8px 28px rgba(244,185,66,.5);
+      transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s;
+      position: relative; z-index: 2;
+    }
+    .enroll-btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 16px 40px rgba(244,185,66,.6);
+    }
+
+    /* pink bottom bar */
+    .notice-bar {
+      background: linear-gradient(90deg,#f9b4b4,#f9c8d0);
+      padding: 18px 24px;
+      text-align: center;
+      font-size: .95rem;
+      font-weight: 700;
+      color: #7a1a1a;
+      position: relative; z-index: 2;
+    }
+
+    /* ─── FOOTER ────────────────────────────────── */
+    footer {
+      background: var(--green-dark);
+      color: rgba(255,255,255,.7);
+      text-align: center;
+      padding: 24px 20px;
+      font-size: .88rem;
+    }
+    footer strong { color: #fff; }
+
+    /* ─── PARTICLES ─────────────────────────────── */
+    #particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: .5;
+      animation: rise linear infinite;
+    }
+    @keyframes rise {
+      0%   { transform: translateY(100vh) scale(.5); opacity:.5; }
+      100% { transform: translateY(-10vh) scale(1);  opacity:0; }
+    }
+
+    /* ─── RESPONSIVE ────────────────────────────── */
+    @media(max-width:600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor-ring"></div>
+<div id="cursor-dot"></div>
+
+<!-- FLOATING PARTICLES -->
+<div id="particles"></div>
+
+<!-- ─── HERO ──────────────────────────────────────── -->
+<section id="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- Alphabet strip -->
+  <div class="alpha-strip">
+    <div class="alpha-chip">Aa</div>
+    <div class="alpha-chip">Bb</div>
+    <div class="alpha-chip">Cc</div>
+    <div class="alpha-chip">Dd</div>
+    <div class="alpha-chip">Ee</div>
+    <div class="alpha-chip" style="font-family:serif;">ا</div>
+    <div class="alpha-chip" style="font-family:serif;">ب</div>
+    <div class="alpha-chip" style="font-family:serif;">ت</div>
+    <div class="alpha-chip" style="font-family:serif;">ث</div>
+    <div class="alpha-chip" style="font-family:serif;">ج</div>
+    <div class="alpha-chip">1</div>
+    <div class="alpha-chip">2</div>
+    <div class="alpha-chip">3</div>
+    <div class="alpha-chip">4</div>
+    <div class="alpha-chip">5</div>
+  </div>
+
+  <!-- Logo -->
+  <div class="logo-wrap">
+    <div class="logo-circle">
+      <!-- Dove + PL logo -->
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Dove body -->
+        <ellipse cx="42" cy="30" rx="16" ry="10" fill="white" opacity=".9"/>
+        <!-- Wing -->
+        <path d="M28 28 Q20 18 30 14 Q36 22 42 26Z" fill="white" opacity=".85"/>
+        <!-- Head -->
+        <circle cx="55" cy="24" r="7" fill="white" opacity=".9"/>
+        <!-- Beak -->
+        <path d="M61 23 L67 22 L61 25Z" fill="#f4b942"/>
+        <!-- Eye -->
+        <circle cx="57" cy="22" r="1.5" fill="#1a6b3c"/>
+        <!-- PL text -->
+        <text x="18" y="58" font-family="'Baloo 2',cursive" font-size="22" font-weight="800" fill="white">PL</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="brand-name">PEACE LAND</div>
+  <div class="brand-sub">Learning Center</div>
+  <div class="location-badge">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+    Dale City &bull; Woodbridge
+  </div>
+
+  <div class="coming-soon">COMING SOON</div>
+</section>
+
+<!-- ─── INFO CARDS ─────────────────────────────────── -->
+<section id="info">
+  <h2 class="section-title">Everything You Need to Know</h2>
+  <div class="cards-grid">
+
+    <div class="info-card card-green">
+      <div class="card-shimmer"></div>
+      <div class="card-icon">🎒</div>
+      <div class="card-title">Ages &amp; Hours</div>
+      <div class="card-body">
+        We welcome children aged <strong>3 to 5 years</strong>.<br><br>
+        Open <strong>Monday – Friday</strong><br>
+        <strong>7:00 am – 6:00 pm</strong>
+      </div>
+    </div>
+
+    <div class="info-card card-teal">
+      <div class="card-shimmer"></div>
+      <div class="card-icon">📋</div>
+      <div class="card-title">Limited Spots</div>
+      <div class="card-body">
+        Only <strong>12 children</strong> are accepted per cohort. Enrollment is on a <strong>first-come, first-served</strong> basis — act fast to secure your child's spot!
+      </div>
+    </div>
+
+    <div class="info-card card-gold">
+      <div class="card-shimmer"></div>
+      <div class="card-icon">💰</div>
+      <div class="card-title">Tuition</div>
+      <div class="card-body">
+        Fee is <strong>To Be Determined</strong>. We are committed to offering affordable, high-quality early education. Families will be notified of pricing before enrollment opens.
+      </div>
+    </div>
+
+    <div class="info-card card-coral">
+      <div class="card-shimmer"></div>
+      <div class="card-icon">📝</div>
+      <div class="card-title">Interest List</div>
+      <div class="card-body">
+        Add your child to our <strong>interest list today</strong>. We'll contact you directly once <strong>enrollment officially opens</strong> — no need to keep checking back!
+      </div>
+    </div>
+
+    <div class="info-card card-purple">
+      <div class="card-shimmer"></div>
+      <div class="card-icon">📍</div>
+      <div class="card-title">Location</div>
+      <div class="card-body">
+        Conveniently located in <strong>Dale City, Woodbridge</strong>, VA. Exact address will be shared once we open. Stay tuned for updates!
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── ENROLLMENT CTA ─────────────────────────────── -->
+<section id="enroll">
+  <div class="enroll-title">Secure Your Child's Future Today</div>
+  <p class="enroll-body">
+    With only <strong style="color:#f4b942;">12 spots available</strong>, don't wait! Join the interest list and we'll reach out the moment enrollment opens. Give your child the gift of a nurturing, educational start.
+  </p>
+  <a href="mailto:info@peacelandlc.com?subject=Interest%20List%20-%20Peace%20Land%20Learning%20Center" class="enroll-btn">
+    Join the Interest List &rarr;
+  </a>
+</section>
+
+<div class="notice-bar">
+  Only 12 children are accepted &bull; First-come basis &bull; Fee TBD &bull;
+  Add your child to our interest list today &mdash; we'll contact you once enrollment officially opens!
+</div>
+
+<footer>
+  &copy; 2024 <strong>Peace Land Learning Center</strong> &bull; Dale City &bull; Woodbridge, VA
+</footer>
+
+<script>
+  // ─── CURSOR ───────────────────────────────────────
+  const ring = document.getElementById('cursor-ring');
+  const dot  = document.getElementById('cursor-dot');
+  let mx = -200, my = -200, rx = -200, ry = -200;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top  = my + 'px';
+  });
+
+  // smooth ring lerp
+  (function lerp() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(lerp);
+  })();
+
+  // hover detection
+  document.querySelectorAll('a, button, .info-card, .enroll-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+  });
+
+  // ─── CARDS: tilt + touch ─────────────────────────
+  document.querySelectorAll('.info-card').forEach(card => {
+    // mouse tilt
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - .5;
+      const y = (e.clientY - r.top)  / r.height - .5;
+      card.style.transform = `
+        translateY(-18px)
+        rotateX(${-y * 10}deg)
+        rotateY(${x  * 10}deg)
+        scale(1.03)
+      `;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+
+    // touch / tap → add active class
+    card.addEventListener('touchstart', () => {
+      document.querySelectorAll('.info-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+    }, { passive: true });
+  });
+
+  // ─── PARTICLES ───────────────────────────────────
+  const pContainer = document.getElementById('particles');
+  const colors = ['#4ecb8d','#f4b942','#1b9aaa','#f06e6e','#7c4dbd','#2d9e5f'];
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('div');
+    p.classList.add('particle');
+    const size = Math.random() * 14 + 5;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      left:${Math.random()*100}%;
+      bottom:${-size}px;
+      animation-duration:${Math.random()*12+8}s;
+      animation-delay:${Math.random()*12}s;
+      opacity:${Math.random()*.4+.1};
+    `;
+    pContainer.appendChild(p);
+  }
+
+  // ─── 3-D PARALLAX ON HERO ────────────────────────
+  const hero = document.getElementById('hero');
+  document.addEventListener('mousemove', e => {
+    const dx = (e.clientX / window.innerWidth  - .5) * 16;
+    const dy = (e.clientY / window.innerHeight - .5) * 10;
+    hero.style.backgroundPosition = `${50 + dx * .3}% ${50 + dy * .3}%`;
+    document.querySelectorAll('.blob').forEach((b, i) => {
+      const s = (i + 1) * 8;
+      b.style.transform = `translate(${dx*s*.05}px, ${dy*s*.05}px)`;
+    });
+  });
+
+  // ─── SCROLL REVEAL ───────────────────────────────
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: .15 });
+
+  document.querySelectorAll('.info-card').forEach((card, i) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(50px)';
+    card.style.transitionDelay = `${i * 0.1}s`;
+    card.style.transition += ', opacity .5s ease, transform .5s ease';
+    observer.observe(card);
+  });
+</script>
+</body>
+</html>
