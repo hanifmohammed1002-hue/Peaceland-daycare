@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Peace Land Learning Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --green-dark:  #1a6b3c;
+      --green-mid:   #2d9e5f;
+      --green-light: #4ecb8d;
+      --teal:        #1b9aaa;
+      --cream:       #f5f0e8;
+      --gold:        #f4b942;
+      --coral:       #f06e6e;
+      --purple:      #7c4dbd;
+      --pink:        #e87dbf;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Nunito', sans-serif; background: var(--cream); overflow-x: hidden; cursor: none; }
+
+    #cursor-ring { position:fixed;top:0;left:0;width:46px;height:46px;border-radius:50%;border:3px solid var(--green-mid);background:rgba(78,203,141,.15);pointer-events:none;transform:translate(-50%,-50%);transition:width .25s,height .25s,background .25s,border-color .25s;z-index:9999;mix-blend-mode:multiply; }
+    #cursor-dot  { position:fixed;top:0;left:0;width:8px;height:8px;border-radius:50%;background:var(--green-dark);pointer-events:none;transform:translate(-50%,-50%);z-index:10000; }
+    body.hovering #cursor-ring { width:70px;height:70px;background:rgba(244,185,66,.25);border-color:var(--gold); }
+
+    /* NAV */
+    nav { position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;transition:background .4s,box-shadow .4s; }
+    nav.scrolled { background:rgba(255,255,255,.94);backdrop-filter:blur(14px);box-shadow:0 2px 20px rgba(26,107,60,.12); }
+    .nav-logo { display:flex;align-items:center;gap:10px;text-decoration:none; }
+    .nav-logo-text { font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;color:var(--green-dark);line-height:1.1; }
+    .nav-logo-text small { display:block;font-size:.62rem;color:var(--teal);font-weight:700; }
+    .nav-links { display:flex;gap:28px;list-style:none; }
+    .nav-links a { font-weight:700;font-size:.88rem;color:var(--green-dark);text-decoration:none;opacity:.75;transition:opacity .2s; }
+    .nav-links a:hover { opacity:1; }
+    .nav-cta { background:var(--green-dark)!important;color:#fff!important;opacity:1!important;padding:8px 20px;border-radius:50px;box-shadow:0 4px 14px rgba(26,107,60,.3); }
+    .hamburger { display:none;flex-direction:column;gap:5px;cursor:none;background:none;border:none;padding:4px; }
+    .hamburger span { display:block;width:24px;height:2.5px;background:var(--green-dark);border-radius:4px; }
+    @media(max-width:720px){
+      nav{padding:12px 18px;}
+      .nav-links{display:none;}
+      .hamburger{display:flex;}
+      .nav-links.open{display:flex;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);padding:22px 28px 28px;gap:16px;border-bottom:2px solid rgba(26,107,60,.1);}
+    }
+
+    /* HERO */
+    #hero { min-height:100vh;background:linear-gradient(160deg,#e8f8f0 0%,#d0f0e4 40%,#c8eef8 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:120px 20px 80px; }
+    .blob { position:absolute;border-radius:50%;filter:blur(60px);opacity:.32;animation:drift 12s ease-in-out infinite alternate; }
+    .blob-1{width:500px;height:500px;background:var(--green-light);top:-150px;left:-150px;animation-delay:0s;}
+    .blob-2{width:400px;height:400px;background:var(--teal);bottom:-120px;right:-120px;animation-delay:-5s;}
+    .blob-3{width:300px;height:300px;background:var(--gold);top:40%;left:60%;animation-delay:-9s;}
+    @keyframes drift{from{transform:translate(0,0)scale(1);}to{transform:translate(40px,30px)scale(1.08);}}
+
+    .alpha-strip{display:flex;gap:5px;margin-bottom:26px;flex-wrap:wrap;justify-content:center;position:relative;z-index:2;}
+    .alpha-chip{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.82rem;box-shadow:0 4px 10px rgba(0,0,0,.15);animation:bobble 3s ease-in-out infinite;}
+    .alpha-chip:nth-child(odd){background:var(--green-mid);color:#fff;}
+    .alpha-chip:nth-child(even){background:var(--gold);color:#fff;animation-delay:.4s;}
+    .alpha-chip:nth-child(3n){background:var(--teal);color:#fff;animation-delay:.8s;}
+    .alpha-chip:nth-child(4n){background:var(--coral);color:#fff;animation-delay:1.2s;}
+    .alpha-chip:nth-child(5n){background:var(--purple);color:#fff;animation-delay:1.6s;}
+    @keyframes bobble{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+
+    .hero-logo{position:relative;z-index:2;margin-bottom:12px;animation:float 4s ease-in-out infinite;}
+    @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+
+    .brand-name{font-family:'Baloo 2',cursive;font-size:clamp(3rem,8vw,5.5rem);font-weight:800;color:var(--green-dark);line-height:1;text-shadow:0 4px 0 rgba(26,107,60,.18);position:relative;z-index:2;}
+    .brand-sub{display:inline-block;background:linear-gradient(90deg,var(--green-mid),var(--teal));color:#fff;padding:6px 28px;border-radius:50px;font-size:1.3rem;font-weight:700;margin:10px 0;box-shadow:0 6px 20px rgba(45,158,95,.3);position:relative;z-index:2;}
+    .location-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.85);border:2px solid var(--teal);border-radius:50px;padding:6px 20px;font-size:.95rem;font-weight:700;color:var(--teal);margin:8px 0 28px;position:relative;z-index:2;}
+    .coming-soon{font-family:'Baloo 2',cursive;font-size:clamp(3.5rem,12vw,8rem);font-weight:800;background:linear-gradient(135deg,var(--teal) 0%,var(--green-dark) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;position:relative;z-index:2;margin-bottom:32px;animation:shimmer 3s linear infinite;background-size:200% 100%;}
+    @keyframes shimmer{0%{background-position:0%}50%{background-position:100%}100%{background-position:0%}}
+    .hero-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;position:relative;z-index:2;}
+    .btn-primary{background:var(--green-dark);color:#fff;font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;padding:14px 38px;border-radius:50px;text-decoration:none;box-shadow:0 8px 24px rgba(26,107,60,.35);transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s;cursor:none;}
+    .btn-primary:hover{transform:translateY(-4px)scale(1.04);box-shadow:0 16px 36px rgba(26,107,60,.45);}
+    .btn-outline{background:rgba(255,255,255,.8);color:var(--green-dark);font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;padding:14px 38px;border-radius:50px;text-decoration:none;border:2px solid var(--green-dark);transition:transform .25s cubic-bezier(.34,1.56,.64,1);cursor:none;}
+    .btn-outline:hover{transform:translateY(-4px)scale(1.04);}
+    .scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;z-index:2;opacity:.5;}
+    .scroll-hint span{font-size:.7rem;font-weight:800;color:var(--green-dark);letter-spacing:.1em;text-transform:uppercase;}
+    .scroll-arrow{width:22px;height:22px;animation:sbounce 1.8s ease-in-out infinite;}
+    @keyframes sbounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+    /* SECTIONS */
+    #scenes{padding:90px 20px;background:#fff;}
+    .section-header{text-align:center;margin-bottom:52px;}
+    .section-label{display:inline-block;background:rgba(45,158,95,.12);color:var(--green-mid);font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:12px;}
+    .section-title{font-family:'Baloo 2',cursive;font-size:clamp(1.8rem,5vw,2.8rem);color:var(--green-dark);}
+    .section-title::after{content:'';display:block;width:70px;height:5px;background:linear-gradient(90deg,var(--green-mid),var(--teal));border-radius:10px;margin:12px auto 0;}
+    .scenes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px;max-width:1100px;margin:0 auto;}
+    .scene-card{border-radius:28px;overflow:hidden;box-shadow:0 10px 40px rgba(26,107,60,.12);transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .35s;background:#fff;}
+    .scene-card:hover{transform:translateY(-14px);box-shadow:0 28px 60px rgba(26,107,60,.2);}
+    .scene-illustration{width:100%;display:block;}
+    .scene-caption{padding:20px 22px;}
+    .scene-caption h3{font-family:'Baloo 2',cursive;color:var(--green-dark);font-size:1.15rem;margin-bottom:6px;}
+    .scene-caption p{font-size:.9rem;color:#666;line-height:1.6;}
+
+    #info{padding:90px 20px;background:linear-gradient(180deg,#e0f5ea 0%,#f5f0e8 100%);}
+    .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px;max-width:1100px;margin:0 auto;}
+    .info-card{background:#fff;border-radius:24px;padding:36px 28px;box-shadow:0 8px 30px rgba(26,107,60,.10);border-bottom:5px solid transparent;transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .35s,opacity .5s ease;cursor:default;opacity:0;transform:translateY(40px);}
+    .info-card.visible{opacity:1;transform:translateY(0);}
+    .info-card:hover{transform:translateY(-16px)scale(1.03);box-shadow:0 28px 60px rgba(26,107,60,.22);}
+    .info-card.card-green{border-color:var(--green-mid);}
+    .info-card.card-teal{border-color:var(--teal);}
+    .info-card.card-gold{border-color:var(--gold);}
+    .info-card.card-coral{border-color:var(--coral);}
+    .info-card.card-purple{border-color:var(--purple);}
+    .card-icon{width:60px;height:60px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.7rem;margin-bottom:16px;box-shadow:0 6px 16px rgba(0,0,0,.12);}
+    .card-green .card-icon{background:linear-gradient(135deg,#4ecb8d,#2d9e5f);}
+    .card-teal  .card-icon{background:linear-gradient(135deg,#1b9aaa,#0e7084);}
+    .card-gold  .card-icon{background:linear-gradient(135deg,#f4b942,#e09020);}
+    .card-coral .card-icon{background:linear-gradient(135deg,#f06e6e,#d04040);}
+    .card-purple .card-icon{background:linear-gradient(135deg,#7c4dbd,#5a30a0);}
+    .card-title{font-family:'Baloo 2',cursive;font-size:1.25rem;color:var(--green-dark);margin-bottom:8px;font-weight:700;}
+    .card-body{font-size:.95rem;color:#555;line-height:1.65;}
+    .card-body strong{color:var(--green-dark);}
+
+    #curriculum{padding:90px 20px;background:#fff;}
+    .curriculum-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:22px;max-width:1000px;margin:0 auto;}
+    .curr-item{text-align:center;padding:30px 18px;border-radius:20px;background:var(--cream);transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;}
+    .curr-item:hover{transform:translateY(-10px);box-shadow:0 16px 40px rgba(26,107,60,.14);}
+    .curr-emoji{font-size:2.6rem;margin-bottom:12px;display:block;}
+    .curr-name{font-family:'Baloo 2',cursive;font-size:1.05rem;color:var(--green-dark);font-weight:700;margin-bottom:4px;}
+    .curr-desc{font-size:.85rem;color:#666;line-height:1.6;}
+
+    #enroll{background:linear-gradient(135deg,var(--green-dark),var(--teal));padding:90px 20px;text-align:center;position:relative;overflow:hidden;}
+    #enroll::before{content:'✦';position:absolute;font-size:20rem;color:rgba(255,255,255,.04);top:-80px;left:-80px;line-height:1;}
+    #enroll::after{content:'✦';position:absolute;font-size:14rem;color:rgba(255,255,255,.04);bottom:-40px;right:-40px;}
+    .enroll-title{font-family:'Baloo 2',cursive;font-size:clamp(1.8rem,4vw,2.8rem);color:#fff;margin-bottom:16px;position:relative;z-index:2;}
+    .enroll-body{max-width:640px;margin:0 auto 36px;font-size:1.05rem;color:rgba(255,255,255,.88);line-height:1.7;position:relative;z-index:2;}
+    .enroll-body strong{color:var(--gold);}
+    .enroll-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;z-index:2;}
+    .enroll-btn{display:inline-block;background:var(--gold);color:var(--green-dark);font-family:'Baloo 2',cursive;font-size:1.15rem;font-weight:800;padding:16px 48px;border-radius:50px;text-decoration:none;border:none;cursor:none;box-shadow:0 8px 28px rgba(244,185,66,.5);transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s;}
+    .enroll-btn:hover{transform:translateY(-5px)scale(1.05);box-shadow:0 16px 40px rgba(244,185,66,.6);}
+    .enroll-btn-outline{display:inline-block;background:transparent;color:#fff;font-family:'Baloo 2',cursive;font-size:1.15rem;font-weight:800;padding:16px 48px;border-radius:50px;text-decoration:none;border:2px solid rgba(255,255,255,.6);cursor:none;transition:transform .25s,border-color .25s;}
+    .enroll-btn-outline:hover{transform:translateY(-5px);border-color:#fff;}
+    .spots-bar{display:inline-flex;align-items:center;gap:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:10px 24px;margin-bottom:30px;position:relative;z-index:2;}
+    .spots-bar span{color:#fff;font-size:.88rem;font-weight:700;}
+    .spots-dots{display:flex;gap:5px;}
+    .spot-dot{width:12px;height:12px;border-radius:50%;background:var(--gold);}
+    .notice-bar{background:linear-gradient(90deg,#f9b4b4,#f9c8d0);padding:18px 24px;text-align:center;font-size:.93rem;font-weight:700;color:#7a1a1a;}
+
+    #contact{padding:90px 20px;background:var(--cream);}
+    .contact-inner{max-width:700px;margin:0 auto;text-align:center;}
+    .contact-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px;margin-top:38px;}
+    .contact-card{background:#fff;border-radius:20px;padding:26px 18px;box-shadow:0 4px 20px rgba(26,107,60,.08);transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
+    .contact-card:hover{transform:translateY(-8px);}
+    .contact-icon{font-size:1.9rem;margin-bottom:10px;}
+    .contact-label{font-size:.75rem;font-weight:800;color:#aaa;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;}
+    .contact-value{font-size:.92rem;font-weight:700;color:var(--green-dark);word-break:break-all;}
+    .contact-value a{color:var(--teal);text-decoration:none;}
+    .contact-value a:hover{text-decoration:underline;}
+
+    footer{background:var(--green-dark);color:rgba(255,255,255,.65);padding:40px 20px 26px;}
+    .footer-inner{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;}
+    .footer-brand{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;color:#fff;display:flex;align-items:center;gap:12px;}
+    .footer-tagline{font-size:.9rem;max-width:380px;line-height:1.65;}
+    .footer-links{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;}
+    .footer-links a{color:rgba(255,255,255,.65);text-decoration:none;font-size:.86rem;font-weight:700;transition:color .2s;}
+    .footer-links a:hover{color:var(--gold);}
+    .footer-copy{font-size:.8rem;border-top:1px solid rgba(255,255,255,.1);padding-top:18px;margin-top:2px;width:100%;text-align:center;}
+    .footer-copy strong{color:#fff;}
+
+    #particles{position:fixed;inset:0;pointer-events:none;z-index:1;}
+    .particle{position:absolute;border-radius:50%;animation:rise linear infinite;}
+    @keyframes rise{0%{transform:translateY(100vh)scale(.5);opacity:.5;}100%{transform:translateY(-10vh)scale(1);opacity:0;}}
+
+    @media(max-width:600px){
+      .cards-grid,.scenes-grid{grid-template-columns:1fr;}
+      .curriculum-grid{grid-template-columns:1fr 1fr;}
+      .enroll-buttons{flex-direction:column;align-items:center;}
+    }
+  </style>
+</head>
+<body>
+<div id="cursor-ring"></div>
+<div id="cursor-dot"></div>
+<div id="particles"></div>
+
+<!-- ===================== EXACT LOGO SVG =====================
+  From the flyer:
+  - Teal/green dove facing RIGHT, wings arching UP and back
+  - Dove body is compact, head up-right, tail pointing left-down
+  - "PL" dark green bold, P left, L right
+  - The P descender curves right and becomes a long underline
+    that goes under both P and L — like a swoosh baseline
+  - Dove sits top-left, overlapping above PL
+============================================================= -->
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <!-- Small nav logo -->
+    <svg width="52" height="40" viewBox="0 0 130 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- DOVE -->
+      <!-- Main body oval -->
+      <ellipse cx="62" cy="28" rx="18" ry="11" fill="#2a9d6f"/>
+      <!-- Neck going to head (right side) -->
+      <ellipse cx="76" cy="18" rx="10" ry="8" fill="#2a9d6f"/>
+      <!-- Head -->
+      <circle cx="83" cy="12" r="9" fill="#2a9d6f"/>
+      <!-- Beak pointing right -->
+      <path d="M91 10 L102 9 L91 14 Z" fill="#2a9d6f"/>
+      <!-- Eye -->
+      <circle cx="86" cy="10" r="2" fill="white"/>
+      <circle cx="86.5" cy="10" r="1" fill="#1a5c30"/>
+      <!-- Left wing sweeping up-left (main large wing) -->
+      <path d="M55 24 Q38 8 22 2 Q30 14 38 20 Q44 24 52 26 Z" fill="#2a9d6f"/>
+      <!-- Wing tip/secondary feathers -->
+      <path d="M22 2 Q16 6 14 12 Q20 10 28 16 Q24 10 22 2 Z" fill="#3ab87a"/>
+      <!-- Right wing going up-right from body -->
+      <path d="M68 22 Q78 10 88 4 Q80 14 74 20 Z" fill="#2a9d6f"/>
+      <!-- Tail feathers pointing left-down -->
+      <path d="M47 34 Q34 42 26 46 Q32 38 40 36 Z" fill="#2a9d6f"/>
+      <path d="M50 36 Q40 48 34 54 Q40 44 48 40 Z" fill="#2a9d6f"/>
+
+      <!-- PL TEXT -->
+      <!-- P: bowl on top, stem, then the swoosh comes from bottom of stem -->
+      <text x="8" y="88" font-family="'Baloo 2', 'Arial Black', sans-serif" font-size="52" font-weight="800" fill="#1a6030" letter-spacing="-2">PL</text>
+      <!-- Swoosh underline: starts under P stem, sweeps right and curves up slightly at end -->
+      <path d="M8 92 Q55 104 118 92" stroke="#1a6030" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div class="nav-logo-text">Peace Land <small>Learning Center</small></div>
+  </a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#scenes">Our Kids</a></li>
+    <li><a href="#info">Info</a></li>
+    <li><a href="#curriculum">Curriculum</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#enroll" class="nav-cta">Join Interest List</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="alpha-strip">
+    <div class="alpha-chip">Aa</div><div class="alpha-chip">Bb</div><div class="alpha-chip">Cc</div>
+    <div class="alpha-chip">Dd</div><div class="alpha-chip">Ee</div>
+    <div class="alpha-chip" style="font-family:serif;">ا</div>
+    <div class="alpha-chip" style="font-family:serif;">ب</div>
+    <div class="alpha-chip" style="font-family:serif;">ت</div>
+    <div class="alpha-chip" style="font-family:serif;">ث</div>
+    <div class="alpha-chip" style="font-family:serif;">ج</div>
+    <div class="alpha-chip">1</div><div class="alpha-chip">2</div><div class="alpha-chip">3</div>
+    <div class="alpha-chip">4</div><div class="alpha-chip">5</div>
+  </div>
+
+  <!-- HERO LOGO — large, faithful to flyer -->
+  <div class="hero-logo">
+    <svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- ══════════════════════════════
+           DOVE  (teal-green, facing right)
+           Centre of composition: body ~(90,45)
+           Wings arch dramatically upward
+           Head upper-right, tail lower-left
+      ══════════════════════════════ -->
+
+      <!-- Body -->
+      <ellipse cx="90" cy="48" rx="24" ry="14" fill="#2a9d6f"/>
+
+      <!-- Neck + head connection -->
+      <path d="M100 38 Q112 28 118 22" stroke="#2a9d6f" stroke-width="16" stroke-linecap="round" fill="none"/>
+
+      <!-- Head -->
+      <circle cx="122" cy="18" r="13" fill="#2a9d6f"/>
+
+      <!-- Beak (pointing right) -->
+      <path d="M133 14 L150 12 L133 20 Z" fill="#2a9d6f"/>
+
+      <!-- Eye -->
+      <circle cx="127" cy="14" r="3" fill="white"/>
+      <circle cx="128" cy="14" r="1.4" fill="#1a5530"/>
+
+      <!-- LEFT WING — large, sweeps up and to the left -->
+      <!-- Main wing shape -->
+      <path d="
+        M80 42
+        Q65 28 48 16
+        Q36 8  20 4
+        Q30 18 42 26
+        Q56 34 70 40
+        Z
+      " fill="#2a9d6f"/>
+      <!-- Wing highlight / secondary feather layer -->
+      <path d="
+        M20 4
+        Q10 10 8 20
+        Q16 16 26 22
+        Q20 14 20 4
+        Z
+      " fill="#3aba7c"/>
+      <!-- Wing tip feathers (lighter shade for depth) -->
+      <path d="
+        M48 16
+        Q40 10 30 8
+        Q34 16 40 20
+        Z
+      " fill="#3aba7c"/>
+
+      <!-- RIGHT WING — smaller, arches up-right from body -->
+      <path d="
+        M96 38
+        Q108 22 120 10
+        Q112 18 106 28
+        Q100 34 96 38
+        Z
+      " fill="#2a9d6f"/>
+
+      <!-- TAIL feathers — two forked points going lower-left -->
+      <path d="M72 56 Q52 66 38 72 Q48 62 60 58 Z" fill="#2a9d6f"/>
+      <path d="M76 60 Q58 76 46 84 Q56 72 68 66 Z" fill="#2a9d6f"/>
+
+      <!-- ══════════════════════════════
+           PL  LETTERMARK
+           Dark green, bold, below dove
+           Swoosh underline from P through L
+      ══════════════════════════════ -->
+
+      <!-- P letter -->
+      <text
+        x="14" y="140"
+        font-family="'Baloo 2', 'Arial Black', Arial, sans-serif"
+        font-size="72"
+        font-weight="800"
+        fill="#1a6030"
+        letter-spacing="-3"
+      >PL</text>
+
+      <!-- Swoosh baseline: starts at bottom-left of P, arcs under both letters, curls slightly right -->
+      <path
+        d="M14 145 Q90 162 178 148"
+        stroke="#1a6030"
+        stroke-width="6"
+        fill="none"
+        stroke-linecap="round"
+      />
+
+    </svg>
+  </div>
+
+  <div class="brand-name">PEACE LAND</div>
+  <div class="brand-sub">Learning Center</div>
+  <div class="location-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+    Dale City &bull; Woodbridge, VA
+  </div>
+  <div class="coming-soon">COMING SOON</div>
+  <div class="hero-btns">
+    <a href="#enroll" class="btn-primary">Join the Interest List &rarr;</a>
+    <a href="#scenes" class="btn-outline">Meet Our Kids</a>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <svg class="scroll-arrow" viewBox="0 0 24 24" fill="none" stroke="#1a6b3c" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- ILLUSTRATED SCENES -->
+<section id="scenes">
+  <div class="section-header">
+    <span class="section-label">Our Community</span>
+    <h2 class="section-title">A Welcoming Space for Every Child</h2>
+  </div>
+  <div class="scenes-grid">
+
+    <!-- Scene 1: Girls in hijab doing art -->
+    <div class="scene-card">
+      <svg class="scene-illustration" viewBox="0 0 340 230" fill="none">
+        <rect width="340" height="230" fill="#FFF8F0"/>
+        <rect x="255" y="15" width="65" height="75" rx="6" fill="#c8eef8" stroke="#1b9aaa" stroke-width="2"/>
+        <line x1="287" y1="15" x2="287" y2="90" stroke="#1b9aaa" stroke-width="1.5"/>
+        <line x1="255" y1="52" x2="320" y2="52" stroke="#1b9aaa" stroke-width="1.5"/>
+        <circle cx="271" cy="34" r="10" fill="#f4b942" opacity=".5"/>
+        <rect x="35" y="150" width="270" height="16" rx="8" fill="#d4956a"/>
+        <rect x="65" y="166" width="14" height="42" rx="4" fill="#c27a50"/>
+        <rect x="261" y="166" width="14" height="42" rx="4" fill="#c27a50"/>
+        <rect x="120" y="128" width="100" height="26" rx="4" fill="white" stroke="#ddd" stroke-width="1"/>
+        <circle cx="145" cy="140" r="6" fill="#f06e6e" opacity=".4"/>
+        <circle cx="163" cy="136" r="5" fill="#f4b942" opacity=".4"/>
+        <circle cx="180" cy="141" r="7" fill="#4ecb8d" opacity=".4"/>
+        <rect x="78" y="136" width="6" height="18" rx="3" fill="#f06e6e" transform="rotate(-12,81,145)"/>
+        <rect x="91" y="134" width="6" height="18" rx="3" fill="#7c4dbd" transform="rotate(6,94,143)"/>
+        <rect x="104" y="137" width="6" height="18" rx="3" fill="#f4b942" transform="rotate(-4,107,146)"/>
+        <!-- Girl 1 pink hijab -->
+        <ellipse cx="98" cy="192" rx="22" ry="32" fill="#e87dbf"/>
+        <path d="M76 165 Q58 172 62 180" stroke="#f5c9a0" stroke-width="10" stroke-linecap="round" fill="none"/>
+        <circle cx="62" cy="180" r="7" fill="#f5c9a0"/>
+        <path d="M120 165 Q138 170 136 178" stroke="#f5c9a0" stroke-width="10" stroke-linecap="round" fill="none"/>
+        <circle cx="136" cy="178" r="7" fill="#f5c9a0"/>
+        <rect x="91" y="113" width="14" height="18" rx="5" fill="#f5c9a0"/>
+        <circle cx="98" cy="104" r="22" fill="#f5c9a0"/>
+        <ellipse cx="98" cy="91" rx="24" ry="16" fill="#e87dbf"/>
+        <path d="M75 98 Q69 132 75 152 Q87 158 98 158 Q109 158 121 152 Q127 132 121 98" fill="#e87dbf"/>
+        <circle cx="90" cy="101" r="3" fill="#7a3b1e"/>
+        <circle cx="105" cy="101" r="3" fill="#7a3b1e"/>
+        <path d="M91 112 Q98 118 105 112" stroke="#7a3b1e" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <ellipse cx="90" cy="107" rx="4" ry="2" fill="#f9a8a8" opacity=".5"/>
+        <ellipse cx="106" cy="107" rx="4" ry="2" fill="#f9a8a8" opacity=".5"/>
+        <!-- Girl 2 teal hijab -->
+        <ellipse cx="232" cy="192" rx="22" ry="32" fill="#1b9aaa"/>
+        <path d="M210 165 Q192 172 196 180" stroke="#b07040" stroke-width="10" stroke-linecap="round" fill="none"/>
+        <circle cx="196" cy="180" r="7" fill="#b07040"/>
+        <path d="M254 165 Q270 170 268 178" stroke="#b07040" stroke-width="10" stroke-linecap="round" fill="none"/>
+        <circle cx="268" cy="178" r="7" fill="#b07040"/>
+        <rect x="225" y="113" width="14" height="18" rx="5" fill="#b07040"/>
+        <circle cx="232" cy="104" r="22" fill="#b07040"/>
+        <ellipse cx="232" cy="91" rx="24" ry="16" fill="#1b9aaa"/>
+        <path d="M209 98 Q203 132 209 152 Q221 158 232 158 Q243 158 255 152 Q261 132 255 98" fill="#1b9aaa"/>
+        <circle cx="224" cy="101" r="3" fill="#3d1505"/>
+        <circle cx="239" cy="101" r="3" fill="#3d1505"/>
+        <path d="M225 112 Q232 118 239 112" stroke="#3d1505" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <ellipse cx="224" cy="107" rx="4" ry="2" fill="#f9a8a8" opacity=".4"/>
+        <ellipse cx="240" cy="107" rx="4" ry="2" fill="#f9a8a8" opacity=".4"/>
+        <circle cx="217" cy="110" r="3" fill="#f4b942"/>
+        <text x="18" y="52" font-size="18" fill="#f4b942" opacity=".7">★</text>
+        <text x="300" y="120" font-size="14" fill="#7c4dbd" opacity=".6">★</text>
+        <text x="155" y="22" font-size="20" fill="#4ecb8d" opacity=".6">✿</text>
+      </svg>
+      <div class="scene-caption">
+        <h3>Girls Create &amp; Explore</h3>
+        <p>Our girls express themselves through art, drawing, and hands-on creative projects every day.</p>
+      </div>
+    </div>
+
+    <!-- Scene 2: Boy with kufi reading Quran -->
+    <div class="scene-card">
+      <svg class="scene-illustration" viewBox="0 0 340 230" fill="none">
+        <rect width="340" height="230" fill="#F0F8FF"/>
+        <rect width="340" height="38" fill="#1a6b3c" opacity=".08"/>
+        <path d="M150 16 Q167 27 150 42 Q177 36 174 25 Q179 14 150 16Z" fill="#f4b942" opacity=".4"/>
+        <text x="163" y="38" font-size="10" fill="#f4b942" opacity=".8">☪</text>
+        <ellipse cx="170" cy="210" rx="120" ry="18" fill="#7c4dbd" opacity=".12"/>
+        <ellipse cx="170" cy="208" rx="90" ry="12" fill="#2d9e5f" opacity=".15"/>
+        <!-- Quran on stand -->
+        <rect x="145" y="155" width="50" height="8" rx="4" fill="#8B5E3C"/>
+        <path d="M152 162 L145 205 L195 205 L188 162Z" fill="#c27a50"/>
+        <rect x="138" y="202" width="64" height="7" rx="3" fill="#8B5E3C"/>
+        <rect x="146" y="163" width="48" height="42" rx="3" fill="#1a6b3c"/>
+        <rect x="148" y="165" width="22" height="38" rx="2" fill="#fffde8"/>
+        <rect x="172" y="165" width="20" height="38" rx="2" fill="#fffde8"/>
+        <text x="151" y="175" font-size="6" fill="#1a6b3c" font-family="serif">بِسْمِ اللَّهِ</text>
+        <line x1="151" y1="181" x2="168" y2="181" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="151" y1="187" x2="167" y2="187" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="151" y1="193" x2="168" y2="193" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="151" y1="199" x2="166" y2="199" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="175" y1="175" x2="189" y2="175" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="175" y1="181" x2="190" y2="181" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="175" y1="187" x2="189" y2="187" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="175" y1="193" x2="190" y2="193" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="175" y1="199" x2="188" y2="199" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <ellipse cx="170" cy="175" rx="55" ry="18" fill="#f4b942" opacity=".08"/>
+        <!-- Boy sitting -->
+        <path d="M135 205 Q150 182 170 186 Q190 182 205 205" fill="#4ecb8d"/>
+        <ellipse cx="170" cy="165" rx="26" ry="30" fill="#4ecb8d"/>
+        <path d="M144 168 Q128 176 126 184" stroke="#f5c4a0" stroke-width="11" stroke-linecap="round" fill="none"/>
+        <circle cx="126" cy="184" r="7" fill="#f5c4a0"/>
+        <path d="M196 168 Q210 175 212 183" stroke="#f5c4a0" stroke-width="11" stroke-linecap="round" fill="none"/>
+        <circle cx="212" cy="183" r="7" fill="#f5c4a0"/>
+        <rect x="163" y="117" width="14" height="18" rx="5" fill="#f5c4a0"/>
+        <circle cx="170" cy="108" r="24" fill="#f5c4a0"/>
+        <!-- kufi hat -->
+        <ellipse cx="170" cy="90" rx="25" ry="10" fill="#1a6b3c"/>
+        <rect x="145" y="88" width="50" height="13" rx="6" fill="#1a6b3c"/>
+        <circle cx="153" cy="93" r="1.8" fill="#f4b942" opacity=".8"/>
+        <circle cx="162" cy="91" r="1.8" fill="#f4b942" opacity=".8"/>
+        <circle cx="170" cy="90" r="1.8" fill="#f4b942" opacity=".8"/>
+        <circle cx="178" cy="91" r="1.8" fill="#f4b942" opacity=".8"/>
+        <circle cx="187" cy="93" r="1.8" fill="#f4b942" opacity=".8"/>
+        <circle cx="161" cy="107" r="3.5" fill="#5C3317"/>
+        <circle cx="178" cy="107" r="3.5" fill="#5C3317"/>
+        <path d="M163 118 Q170 124 177 118" stroke="#5C3317" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <ellipse cx="161" cy="113" rx="4" ry="2" fill="#f9a8a8" opacity=".5"/>
+        <ellipse cx="179" cy="113" rx="4" ry="2" fill="#f9a8a8" opacity=".5"/>
+        <text x="220" y="108" font-size="16" fill="#f4b942" opacity=".8">✨</text>
+        <text x="80" y="140" font-size="12" fill="#7c4dbd" opacity=".6">✦</text>
+      </svg>
+      <div class="scene-caption">
+        <h3>Boys Learn Quran</h3>
+        <p>Boys develop a love for Quran recitation through gentle, age-appropriate Islamic learning.</p>
+      </div>
+    </div>
+
+    <!-- Scene 3: Classroom with chalkboard -->
+    <div class="scene-card">
+      <svg class="scene-illustration" viewBox="0 0 340 230" fill="none">
+        <rect width="340" height="230" fill="#F0FFF4"/>
+        <rect x="55" y="10" width="230" height="82" rx="8" fill="#1a6b3c"/>
+        <rect x="61" y="16" width="218" height="70" rx="5" fill="#1f7d45"/>
+        <text x="75" y="46" font-size="15" fill="white" font-family="'Baloo 2',cursive" font-weight="700">A  B  C  D</text>
+        <text x="190" y="46" font-size="13" fill="#f4b942" font-family="serif">ا  ب  ت</text>
+        <line x1="75" y1="56" x2="265" y2="56" stroke="white" stroke-width=".7" opacity=".35"/>
+        <text x="80" y="68" font-size="12" fill="white" opacity=".85">1 + 1 = 2</text>
+        <text x="170" y="68" font-size="12" fill="#4ecb8d">2 + 2 = 4</text>
+        <rect x="61" y="80" width="218" height="8" rx="3" fill="#b8906a"/>
+        <rect x="85" y="81" width="14" height="6" rx="3" fill="white"/>
+        <rect x="104" y="81" width="14" height="6" rx="3" fill="#fdd"/>
+        <rect x="25" y="168" width="290" height="14" rx="6" fill="#d4956a"/>
+        <rect x="50" y="182" width="12" height="38" rx="4" fill="#c27a50"/>
+        <rect x="278" y="182" width="12" height="38" rx="4" fill="#c27a50"/>
+        <!-- Kid 1 dark skin kufi -->
+        <ellipse cx="72" cy="188" rx="18" ry="26" fill="#f06e6e"/>
+        <rect x="64" y="134" width="12" height="15" rx="4" fill="#6b3c10"/>
+        <circle cx="70" cy="125" r="18" fill="#6b3c10"/>
+        <ellipse cx="70" cy="112" rx="20" ry="8" fill="#1a6b3c"/>
+        <rect x="50" y="111" width="40" height="9" rx="4.5" fill="#1a6b3c"/>
+        <circle cx="62" cy="125" r="2.5" fill="#2a0e00"/>
+        <circle cx="76" cy="125" r="2.5" fill="#2a0e00"/>
+        <path d="M63 134 Q70 139 77 134" stroke="#2a0e00" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M54 152 Q40 158 42 166" stroke="#a07040" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <path d="M86 152 Q100 157 98 166" stroke="#a07040" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <rect x="40" y="154" width="36" height="22" rx="3" fill="white" stroke="#ddd"/>
+        <line x1="45" y1="161" x2="70" y2="161" stroke="#aaa" stroke-width="1"/>
+        <line x1="45" y1="167" x2="68" y2="167" stroke="#aaa" stroke-width="1"/>
+        <!-- Kid 2 purple hijab -->
+        <ellipse cx="155" cy="187" rx="20" ry="28" fill="#7c4dbd"/>
+        <rect x="147" y="132" width="12" height="16" rx="4" fill="#f5c9a0"/>
+        <circle cx="153" cy="123" r="19" fill="#f5c9a0"/>
+        <ellipse cx="153" cy="110" rx="21" ry="13" fill="#7c4dbd"/>
+        <path d="M132 117 Q126 144 132 158 Q143 164 153 164 Q163 164 174 158 Q180 144 174 117" fill="#7c4dbd"/>
+        <circle cx="145" cy="122" r="2.8" fill="#3a1060"/>
+        <circle cx="161" cy="122" r="2.8" fill="#3a1060"/>
+        <path d="M146 132 Q153 138 160 132" stroke="#3a1060" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M133 152 Q118 158 120 166" stroke="#f5c9a0" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <path d="M173 152 Q186 157 184 166" stroke="#f5c9a0" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <!-- Kid 3 light skin raising hand -->
+        <ellipse cx="250" cy="186" rx="18" ry="26" fill="#4ecb8d"/>
+        <rect x="242" y="132" width="12" height="15" rx="4" fill="#f8ddb8"/>
+        <circle cx="248" cy="123" r="18" fill="#f8ddb8"/>
+        <ellipse cx="248" cy="111" rx="19" ry="8" fill="#a06030"/>
+        <path d="M230 118 Q229 112 238 109 Q248 106 258 109 Q267 112 266 118" fill="#a06030"/>
+        <circle cx="240" cy="122" r="2.5" fill="#4a2000"/>
+        <circle cx="256" cy="122" r="2.5" fill="#4a2000"/>
+        <path d="M241 132 Q248 137 255 132" stroke="#4a2000" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M232 152 Q218 157 220 165" stroke="#f8ddb8" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <path d="M264 148 Q278 126 276 108" stroke="#f8ddb8" stroke-width="10" stroke-linecap="round" fill="none"/>
+        <circle cx="276" cy="108" r="7" fill="#f8ddb8"/>
+        <text x="12" y="32" font-size="16" fill="#f4b942" opacity=".7">★</text>
+        <text x="300" y="175" font-size="16" fill="#4ecb8d" opacity=".5">✿</text>
+      </svg>
+      <div class="scene-caption">
+        <h3>Classroom Learning</h3>
+        <p>Children learn English, Arabic, and math in a joyful bilingual classroom environment.</p>
+      </div>
+    </div>
+
+    <!-- Scene 4: Teacher hijab reading to kids -->
+    <div class="scene-card">
+      <svg class="scene-illustration" viewBox="0 0 340 230" fill="none">
+        <rect width="340" height="230" fill="#FFF5F8"/>
+        <rect x="0" y="0" width="68" height="230" fill="#f0e8dc"/>
+        <rect x="7" y="18" width="54" height="7" rx="2" fill="#d4a87a"/>
+        <rect x="7" y="58" width="54" height="7" rx="2" fill="#d4a87a"/>
+        <rect x="10" y="20" width="10" height="34" rx="2" fill="#f06e6e"/>
+        <rect x="21" y="22" width="10" height="32" rx="2" fill="#f4b942"/>
+        <rect x="32" y="20" width="10" height="34" rx="2" fill="#1b9aaa"/>
+        <rect x="43" y="21" width="10" height="33" rx="2" fill="#7c4dbd"/>
+        <rect x="54" y="20" width="8" height="34" rx="2" fill="#4ecb8d"/>
+        <rect x="10" y="60" width="10" height="32" rx="2" fill="#4ecb8d"/>
+        <rect x="21" y="62" width="10" height="30" rx="2" fill="#f06e6e"/>
+        <rect x="32" y="60" width="10" height="32" rx="2" fill="#f4b942"/>
+        <rect x="43" y="61" width="10" height="31" rx="2" fill="#1a6b3c"/>
+        <!-- Teacher yellow hijab -->
+        <rect x="95" y="150" width="72" height="14" rx="6" fill="#d4956a"/>
+        <rect x="152" y="114" width="10" height="48" rx="4" fill="#c27a50"/>
+        <rect x="102" y="164" width="10" height="36" rx="4" fill="#c27a50"/>
+        <rect x="146" y="164" width="10" height="36" rx="4" fill="#c27a50"/>
+        <ellipse cx="133" cy="142" rx="27" ry="34" fill="#e87dbf"/>
+        <rect x="92" y="125" width="82" height="52" rx="5" fill="#1a6b3c"/>
+        <rect x="94" y="127" width="38" height="48" rx="3" fill="#fffde8"/>
+        <rect x="134" y="127" width="38" height="48" rx="3" fill="#fffde8"/>
+        <text x="97" y="140" font-size="7" fill="#1a6b3c" font-family="serif">بِسْمِ اللَّهِ</text>
+        <line x1="97" y1="147" x2="128" y2="147" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="97" y1="154" x2="127" y2="154" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="97" y1="161" x2="128" y2="161" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="97" y1="168" x2="126" y2="168" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <path d="M150 143 Q156 133 150 124 Q165 130 162 138 Q167 135 165 143 Q160 150 150 143Z" fill="#f4b942" opacity=".5"/>
+        <path d="M104 152 Q90 160 92 167" stroke="#c8855a" stroke-width="11" stroke-linecap="round" fill="none"/>
+        <path d="M162 152 Q174 159 172 167" stroke="#c8855a" stroke-width="11" stroke-linecap="round" fill="none"/>
+        <rect x="126" y="88" width="14" height="18" rx="5" fill="#c8855a"/>
+        <circle cx="133" cy="80" r="22" fill="#c8855a"/>
+        <ellipse cx="133" cy="67" rx="24" ry="15" fill="#f4b942"/>
+        <path d="M109 74 Q103 110 109 130 Q120 136 133 136 Q146 136 157 130 Q163 110 157 74" fill="#f4b942"/>
+        <circle cx="118" cy="92" r="3" fill="#e87dbf"/>
+        <circle cx="127" cy="79" r="3" fill="#5C3317"/>
+        <circle cx="141" cy="79" r="3" fill="#5C3317"/>
+        <path d="M128 89 Q133 95 139 89" stroke="#5C3317" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <!-- Kid 1 boy listening -->
+        <ellipse cx="222" cy="196" rx="18" ry="27" fill="#1b9aaa"/>
+        <rect x="214" y="153" width="12" height="14" rx="4" fill="#f5c9a0"/>
+        <circle cx="220" cy="144" r="17" fill="#f5c9a0"/>
+        <ellipse cx="220" cy="132" rx="18" ry="8" fill="#8B5E3C"/>
+        <path d="M203 138 Q202 132 210 130 Q220 128 230 130 Q238 132 237 138" fill="#8B5E3C"/>
+        <circle cx="212" cy="143" r="2.5" fill="#4a2000"/>
+        <circle cx="228" cy="143" r="2.5" fill="#4a2000"/>
+        <path d="M213 152 Q220 157 227 152" stroke="#4a2000" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        <path d="M202 168 Q190 172 192 180" stroke="#f5c9a0" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M238 168 Q249 171 247 180" stroke="#f5c9a0" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <!-- Kid 2 girl pink hijab listening -->
+        <ellipse cx="298" cy="194" rx="17" ry="25" fill="#e87dbf"/>
+        <rect x="290" y="154" width="12" height="14" rx="4" fill="#b07040"/>
+        <circle cx="296" cy="145" r="16" fill="#b07040"/>
+        <ellipse cx="296" cy="134" rx="18" ry="11" fill="#e87dbf"/>
+        <path d="M278 140 Q273 162 278 174 Q287 179 296 179 Q305 179 314 174 Q319 162 314 140" fill="#e87dbf"/>
+        <circle cx="289" cy="144" r="2.5" fill="#3d1505"/>
+        <circle cx="303" cy="144" r="2.5" fill="#3d1505"/>
+        <path d="M290 153 Q296 158 302 153" stroke="#3d1505" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+        <path d="M279 166 Q268 170 270 178" stroke="#b07040" stroke-width="7" stroke-linecap="round" fill="none"/>
+        <path d="M313 166 Q322 170 320 178" stroke="#b07040" stroke-width="7" stroke-linecap="round" fill="none"/>
+        <text x="250" y="112" font-size="14" fill="#f4b942" opacity=".8">★</text>
+        <text x="232" y="130" font-size="12" fill="#4ecb8d" opacity=".7">★</text>
+      </svg>
+      <div class="scene-caption">
+        <h3>Storytime with Teacher</h3>
+        <p>Our caring teachers read Islamic stories and lessons, sparking curiosity and a love of learning.</p>
+      </div>
+    </div>
+
+    <!-- Scene 5: Playground -->
+    <div class="scene-card">
+      <svg class="scene-illustration" viewBox="0 0 340 230" fill="none">
+        <rect width="340" height="230" fill="#E8F8F0"/>
+        <rect width="340" height="150" fill="#c8eef8"/>
+        <circle cx="292" cy="48" r="30" fill="#f4b942" opacity=".65"/>
+        <circle cx="292" cy="48" r="22" fill="#f4b942" opacity=".9"/>
+        <ellipse cx="65" cy="38" rx="42" ry="17" fill="white" opacity=".8"/>
+        <ellipse cx="85" cy="33" rx="32" ry="15" fill="white" opacity=".8"/>
+        <ellipse cx="185" cy="52" rx="36" ry="14" fill="white" opacity=".6"/>
+        <rect x="0" y="162" width="340" height="68" fill="#4ecb8d"/>
+        <ellipse cx="170" cy="188" rx="210" ry="55" fill="#3db87a"/>
+        <rect x="14" y="114" width="10" height="55" rx="4" fill="#8B5E3C"/>
+        <ellipse cx="19" cy="103" rx="22" ry="28" fill="#2d9e5f"/>
+        <rect x="298" y="118" width="10" height="50" rx="4" fill="#8B5E3C"/>
+        <ellipse cx="303" cy="107" rx="20" ry="24" fill="#1a6b3c"/>
+        <rect x="222" y="82" width="10" height="75" rx="4" fill="#c27a50"/>
+        <path d="M227 82 Q268 104 272 145" stroke="#f06e6e" stroke-width="12" stroke-linecap="round" fill="none"/>
+        <rect x="220" y="62" width="72" height="24" rx="4" fill="#c27a50"/>
+        <rect x="98" y="50" width="104" height="8" rx="4" fill="#8B5E3C"/>
+        <line x1="123" y1="58" x2="123" y2="118" stroke="#8B5E3C" stroke-width="2"/>
+        <line x1="179" y1="58" x2="179" y2="118" stroke="#8B5E3C" stroke-width="2"/>
+        <rect x="110" y="116" width="52" height="10" rx="5" fill="#c27a50"/>
+        <!-- Swing girl pink hijab -->
+        <circle cx="152" cy="103" r="15" fill="#f5c9a0"/>
+        <ellipse cx="152" cy="93" rx="16" ry="10" fill="#e87dbf"/>
+        <path d="M136 100 Q131 122 137 133 Q144 138 152 138 Q160 138 167 133 Q173 122 167 100" fill="#e87dbf"/>
+        <circle cx="145" cy="103" r="2.2" fill="#5C3317"/>
+        <circle cx="158" cy="103" r="2.2" fill="#5C3317"/>
+        <path d="M146 111 Q152 115 157 111" stroke="#5C3317" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M137 112 Q124 116 123 118" stroke="#f5c9a0" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M167 112 Q178 116 179 118" stroke="#f5c9a0" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <ellipse cx="152" cy="133" rx="14" ry="18" fill="#e87dbf"/>
+        <!-- Running boy kufi -->
+        <ellipse cx="65" cy="182" rx="16" ry="22" fill="#f4b942"/>
+        <rect x="57" y="150" width="11" height="14" rx="4" fill="#6b3c10"/>
+        <circle cx="62" cy="142" r="14" fill="#6b3c10"/>
+        <ellipse cx="62" cy="131" rx="15" ry="7" fill="#1a6b3c"/>
+        <rect x="47" y="130" width="30" height="8" rx="4" fill="#1a6b3c"/>
+        <circle cx="55" cy="141" r="2" fill="#2a0e00"/>
+        <circle cx="68" cy="141" r="2" fill="#2a0e00"/>
+        <path d="M56 149 Q62 154 68 149" stroke="#2a0e00" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+        <path d="M48 163 Q34 158 32 164" stroke="#a07040" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M76 163 Q88 156 90 162" stroke="#a07040" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M55 200 Q46 214 42 217" stroke="#f4b942" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M72 200 Q82 210 84 215" stroke="#f4b942" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <!-- Girl near slide teal hijab -->
+        <ellipse cx="257" cy="186" rx="16" ry="24" fill="#1b9aaa"/>
+        <rect x="249" y="154" width="11" height="14" rx="4" fill="#c8855a"/>
+        <circle cx="254" cy="145" r="14" fill="#c8855a"/>
+        <ellipse cx="254" cy="135" rx="15" ry="9" fill="#1b9aaa"/>
+        <path d="M239 141 Q235 163 240 174 Q247 179 254 179 Q261 179 268 174 Q273 163 269 141" fill="#1b9aaa"/>
+        <circle cx="247" cy="145" r="2" fill="#3d1505"/>
+        <circle cx="260" cy="145" r="2" fill="#3d1505"/>
+        <path d="M248 153 Q254 157 259 153" stroke="#3d1505" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M240 167 Q229 171 231 178" stroke="#c8855a" stroke-width="7" stroke-linecap="round" fill="none"/>
+        <path d="M268 167 Q277 170 275 178" stroke="#c8855a" stroke-width="7" stroke-linecap="round" fill="none"/>
+        <text x="184" y="174" font-size="14" fill="#e87dbf" opacity=".7">🌸</text>
+        <text x="108" y="178" font-size="12" fill="#f4b942" opacity=".7">✿</text>
+      </svg>
+      <div class="scene-caption">
+        <h3>Outdoor Playtime</h3>
+        <p>Fresh air, movement, and play help children grow strong, confident, and full of joy.</p>
+      </div>
+    </div>
+
+    <!-- Scene 6: Quran circle -->
+    <div class="scene-card">
+      <svg class="scene-illustration" viewBox="0 0 340 230" fill="none">
+        <rect width="340" height="230" fill="#F5F0FF"/>
+        <circle cx="170" cy="115" r="105" fill="none" stroke="#7c4dbd" stroke-width=".5" opacity=".18"/>
+        <circle cx="170" cy="115" r="75" fill="none" stroke="#7c4dbd" stroke-width=".5" opacity=".13"/>
+        <polygon points="170,30 188,55 215,55 222,80 208,100 185,100 170,120 155,100 132,100 118,80 125,55 152,55" fill="none" stroke="#f4b942" stroke-width="1" opacity=".18"/>
+        <path d="M150 16 Q167 27 150 42 Q177 36 174 25 Q179 14 150 16Z" fill="#f4b942" opacity=".4"/>
+        <text x="163" y="38" font-size="10" fill="#f4b942" opacity=".8">☪</text>
+        <ellipse cx="170" cy="200" rx="145" ry="24" fill="#7c4dbd" opacity=".1"/>
+        <!-- Quran on stand centre -->
+        <rect x="152" y="108" width="36" height="7" rx="3.5" fill="#8B5E3C"/>
+        <path d="M158 114 L152 165 L188 165 L182 114Z" fill="#c27a50"/>
+        <rect x="145" y="161" width="50" height="7" rx="3" fill="#8B5E3C"/>
+        <rect x="153" y="115" width="34" height="48" rx="3" fill="#1a6b3c"/>
+        <rect x="155" y="117" width="15" height="44" rx="2" fill="#fffde8"/>
+        <rect x="171" y="117" width="14" height="44" rx="2" fill="#fffde8"/>
+        <text x="157" y="128" font-size="6" fill="#1a6b3c" font-family="serif" font-weight="bold">بِسْمِ</text>
+        <text x="156" y="136" font-size="5.5" fill="#1a6b3c" font-family="serif">اللَّهِ الرَّحْمَنِ</text>
+        <line x1="157" y1="142" x2="168" y2="142" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="157" y1="148" x2="167" y2="148" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="173" y1="128" x2="183" y2="128" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="173" y1="134" x2="183" y2="134" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="173" y1="140" x2="184" y2="140" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <line x1="173" y1="146" x2="183" y2="146" stroke="#1a6b3c" stroke-width="1" opacity=".4"/>
+        <ellipse cx="170" cy="140" rx="42" ry="30" fill="#f4b942" opacity=".07"/>
+        <!-- 4 kids around Quran -->
+        <!-- TL girl pink hijab -->
+        <ellipse cx="90" cy="165" rx="16" ry="24" fill="#e87dbf"/>
+        <rect x="83" y="125" width="12" height="14" rx="4" fill="#f5c9a0"/>
+        <circle cx="89" cy="116" r="15" fill="#f5c9a0"/>
+        <ellipse cx="89" cy="105" rx="17" ry="11" fill="#e87dbf"/>
+        <path d="M72 112 Q68 135 73 147 Q81 152 89 152 Q97 152 105 147 Q110 135 106 112" fill="#e87dbf"/>
+        <circle cx="83" cy="116" r="2.2" fill="#5C3317"/>
+        <circle cx="95" cy="116" r="2.2" fill="#5C3317"/>
+        <path d="M84 125 Q89 129 94 125" stroke="#5C3317" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <rect x="72" y="150" width="34" height="20" rx="3" fill="#1a6b3c"/>
+        <rect x="74" y="152" width="14" height="16" rx="2" fill="#fffde8"/>
+        <rect x="90" y="152" width="14" height="16" rx="2" fill="#fffde8"/>
+        <text x="76" y="161" font-size="5" fill="#1a6b3c" font-family="serif">بسم</text>
+        <!-- TR boy kufi dark skin -->
+        <ellipse cx="250" cy="165" rx="16" ry="24" fill="#4ecb8d"/>
+        <rect x="242" y="125" width="12" height="14" rx="4" fill="#6b3c10"/>
+        <circle cx="248" cy="116" r="15" fill="#6b3c10"/>
+        <ellipse cx="248" cy="105" rx="17" ry="8" fill="#1a6b3c"/>
+        <rect x="231" y="104" width="34" height="9" rx="4.5" fill="#1a6b3c"/>
+        <circle cx="241" cy="116" r="2.2" fill="#2a0e00"/>
+        <circle cx="254" cy="116" r="2.2" fill="#2a0e00"/>
+        <path d="M242 125 Q248 129 253 125" stroke="#2a0e00" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <rect x="232" y="150" width="34" height="20" rx="3" fill="#1a6b3c"/>
+        <rect x="234" y="152" width="14" height="16" rx="2" fill="#fffde8"/>
+        <rect x="250" y="152" width="14" height="16" rx="2" fill="#fffde8"/>
+        <text x="236" y="161" font-size="5" fill="#1a6b3c" font-family="serif">بسم</text>
+        <!-- BL girl yellow hijab -->
+        <ellipse cx="108" cy="205" rx="15" ry="18" fill="#f4b942"/>
+        <rect x="101" y="180" width="11" height="12" rx="4" fill="#b07040"/>
+        <circle cx="106" cy="172" r="13" fill="#b07040"/>
+        <ellipse cx="106" cy="162" rx="15" ry="10" fill="#f4b942"/>
+        <path d="M91 168 Q88 185 92 195 Q100 200 106 200 Q112 200 120 195 Q124 185 121 168" fill="#f4b942"/>
+        <circle cx="100" cy="172" r="2" fill="#3d1505"/>
+        <circle cx="113" cy="172" r="2" fill="#3d1505"/>
+        <path d="M101 179 Q106 183 111 179" stroke="#3d1505" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+        <!-- BR boy medium skin -->
+        <ellipse cx="232" cy="205" rx="15" ry="18" fill="#7c4dbd"/>
+        <rect x="225" y="180" width="11" height="12" rx="4" fill="#c8855a"/>
+        <circle cx="230" cy="172" r="13" fill="#c8855a"/>
+        <ellipse cx="230" cy="162" rx="15" ry="7" fill="#7c4dbd"/>
+        <rect x="215" y="161" width="30" height="8" rx="4" fill="#7c4dbd"/>
+        <circle cx="224" cy="172" r="2" fill="#3d1505"/>
+        <circle cx="236" cy="172" r="2" fill="#3d1505"/>
+        <path d="M225 179 Q230 183 235 179" stroke="#3d1505" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+        <text x="22" y="82" font-size="16" fill="#f4b942" opacity=".6">✨</text>
+        <text x="293" y="85" font-size="14" fill="#7c4dbd" opacity=".5">✦</text>
+      </svg>
+      <div class="scene-caption">
+        <h3>Quran Circle</h3>
+        <p>Children gather to listen, recite, and connect with the Quran in a loving, peaceful group setting.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- INFO CARDS -->
+<section id="info">
+  <div class="section-header">
+    <span class="section-label">Details</span>
+    <h2 class="section-title">Everything You Need to Know</h2>
+  </div>
+  <div class="cards-grid">
+    <div class="info-card card-green"><div class="card-icon">🎒</div><div class="card-title">Ages &amp; Hours</div><div class="card-body">We welcome children aged <strong>3 to 5 years</strong>.<br><br>Open <strong>Monday – Friday</strong><br><strong>7:00 am – 6:00 pm</strong></div></div>
+    <div class="info-card card-teal"><div class="card-icon">📋</div><div class="card-title">Limited Spots</div><div class="card-body">Only <strong>12 children</strong> accepted per cohort. Enrollment is <strong>first-come, first-served</strong> — act fast to secure your child's spot!</div></div>
+    <div class="info-card card-gold"><div class="card-icon">💰</div><div class="card-title">Tuition</div><div class="card-body">Fee is <strong>To Be Determined</strong>. We're committed to affordable, high-quality early education. Families notified before enrollment opens.</div></div>
+    <div class="info-card card-coral"><div class="card-icon">📝</div><div class="card-title">Interest List</div><div class="card-body">Add your child to our <strong>interest list today</strong>. We'll contact you once <strong>enrollment officially opens</strong>!</div></div>
+    <div class="info-card card-purple"><div class="card-icon">📍</div><div class="card-title">Location</div><div class="card-body">Located in <strong>Dale City, Woodbridge</strong>, VA. Exact address shared once we open. Stay tuned!</div></div>
+  </div>
+</section>
+
+<!-- CURRICULUM -->
+<section id="curriculum">
+  <div class="section-header">
+    <span class="section-label">What We Teach</span>
+    <h2 class="section-title">Our Curriculum</h2>
+  </div>
+  <div class="curriculum-grid">
+    <div class="curr-item"><span class="curr-emoji">🔤</span><div class="curr-name">English Literacy</div><div class="curr-desc">Alphabet, phonics, early reading &amp; storytelling.</div></div>
+    <div class="curr-item"><span class="curr-emoji">🌙</span><div class="curr-name">Arabic Language</div><div class="curr-desc">Arabic alphabet, vocabulary &amp; cultural roots.</div></div>
+    <div class="curr-item"><span class="curr-emoji">📖</span><div class="curr-name">Quran Basics</div><div class="curr-desc">Gentle introduction to Quranic recitation &amp; surahs.</div></div>
+    <div class="curr-item"><span class="curr-emoji">🔢</span><div class="curr-name">Math Foundations</div><div class="curr-desc">Numbers, counting, shapes &amp; early problem-solving.</div></div>
+    <div class="curr-item"><span class="curr-emoji">🎨</span><div class="curr-name">Arts &amp; Creativity</div><div class="curr-desc">Drawing, painting, crafts &amp; imaginative play.</div></div>
+    <div class="curr-item"><span class="curr-emoji">🌿</span><div class="curr-name">Nature &amp; Science</div><div class="curr-desc">Exploring the world through curiosity &amp; discovery.</div></div>
+  </div>
+</section>
+
+<!-- ENROLL -->
+<section id="enroll">
+  <div class="spots-bar">
+    <span>Only</span>
+    <div class="spots-dots">
+      <div class="spot-dot"></div><div class="spot-dot"></div><div class="spot-dot"></div>
+      <div class="spot-dot"></div><div class="spot-dot"></div><div class="spot-dot"></div>
+      <div class="spot-dot"></div><div class="spot-dot"></div><div class="spot-dot"></div>
+      <div class="spot-dot"></div><div class="spot-dot"></div><div class="spot-dot"></div>
+    </div>
+    <span>12 spots available</span>
+  </div>
+  <div class="enroll-title">Secure Your Child's Future Today</div>
+  <p class="enroll-body">With only <strong>12 spots available</strong>, don't wait! Join the interest list and we'll reach out the moment enrollment opens. Give your child the gift of a nurturing, joyful, Islamic early education.</p>
+  <div class="enroll-buttons">
+    <a href="mailto:info@peacelandlc.com?subject=Interest%20List%20-%20Peace%20Land%20Learning%20Center" class="enroll-btn">Join the Interest List &rarr;</a>
+    <a href="mailto:info@peacelandlc.com?subject=Question%20-%20Peace%20Land%20Learning%20Center" class="enroll-btn-outline">Ask a Question</a>
+  </div>
+</section>
+
+<div class="notice-bar">
+  Only 12 children accepted &bull; First-come, first-served &bull; Tuition TBD &bull; Add your child to our interest list — we'll contact you once enrollment opens!
+</div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-header">
+      <span class="section-label">Get in Touch</span>
+      <h2 class="section-title">Contact Us</h2>
+    </div>
+    <div class="contact-cards">
+      <div class="contact-card"><div class="contact-icon">✉️</div><div class="contact-label">Email</div><div class="contact-value"><a href="mailto:info@peacelandlc.com">info@peacelandlc.com</a></div></div>
+      <div class="contact-card"><div class="contact-icon">📍</div><div class="contact-label">Location</div><div class="contact-value">Dale City, Woodbridge, VA</div></div>
+      <div class="contact-card"><div class="contact-icon">🕐</div><div class="contact-label">Hours</div><div class="contact-value">Mon–Fri, 7am–6pm</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <svg width="38" height="30" viewBox="0 0 200 160" fill="none">
+        <ellipse cx="90" cy="48" rx="24" ry="14" fill="white"/>
+        <path d="M100 38 Q112 28 118 22" stroke="white" stroke-width="16" stroke-linecap="round" fill="none"/>
+        <circle cx="122" cy="18" r="13" fill="white"/>
+        <path d="M133 14 L150 12 L133 20 Z" fill="#f4b942"/>
+        <circle cx="127" cy="14" r="3" fill="rgba(255,255,255,0.3)"/>
+        <path d="M80 42 Q65 28 48 16 Q36 8 20 4 Q30 18 42 26 Q56 34 70 40 Z" fill="white"/>
+        <path d="M96 38 Q108 22 120 10 Q112 18 106 28 Q100 34 96 38 Z" fill="white"/>
+        <path d="M72 56 Q52 66 38 72 Q48 62 60 58 Z" fill="white"/>
+        <path d="M76 60 Q58 76 46 84 Q56 72 68 66 Z" fill="white"/>
+        <text x="14" y="140" font-family="'Baloo 2',cursive" font-size="72" font-weight="800" fill="white" letter-spacing="-3">PL</text>
+        <path d="M14 145 Q90 162 178 148" stroke="white" stroke-width="6" fill="none" stroke-linecap="round"/>
+      </svg>
+      Peace Land Learning Center
+    </div>
+    <p class="footer-tagline">A nurturing, bilingual Islamic early learning environment for children ages 3–5 in Dale City, Woodbridge, VA.</p>
+    <nav class="footer-links">
+      <a href="#scenes">Our Kids</a>
+      <a href="#info">Info</a>
+      <a href="#curriculum">Curriculum</a>
+      <a href="#enroll">Enroll</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="footer-copy">&copy; 2025 <strong>Peace Land Learning Center</strong> &bull; Dale City &bull; Woodbridge, VA</div>
+  </div>
+</footer>
+
+<script>
+  const ring=document.getElementById('cursor-ring'),dot=document.getElementById('cursor-dot');
+  let mx=-200,my=-200,rx=-200,ry=-200;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+  (function lerp(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(lerp);})();
+  document.querySelectorAll('a,button,.info-card,.curr-item,.contact-card,.scene-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
+  });
+  const navbar=document.getElementById('navbar');
+  window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',window.scrollY>40));
+  document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('nav-links').classList.toggle('open'));
+  document.querySelectorAll('.info-card').forEach(card=>{
+    card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5;const y=(e.clientY-r.top)/r.height-.5;card.style.transform=`translateY(-18px) rotateX(${-y*10}deg) rotateY(${x*10}deg) scale(1.03)`;});
+    card.addEventListener('mouseleave',()=>card.style.transform='');
+  });
+  const pC=document.getElementById('particles');
+  ['#4ecb8d','#f4b942','#1b9aaa','#f06e6e','#7c4dbd','#2d9e5f'].forEach(c=>{
+    for(let j=0;j<5;j++){const p=document.createElement('div');p.classList.add('particle');const s=Math.random()*14+5;p.style.cssText=`width:${s}px;height:${s}px;background:${c};left:${Math.random()*100}%;bottom:${-s}px;animation-duration:${Math.random()*12+8}s;animation-delay:${Math.random()*12}s;opacity:${Math.random()*.35+.08};`;pC.appendChild(p);}
+  });
+  document.addEventListener('mousemove',e=>{const dx=(e.clientX/window.innerWidth-.5)*16;const dy=(e.clientY/window.innerHeight-.5)*10;document.querySelectorAll('.blob').forEach((b,i)=>{const s=(i+1)*8;b.style.transform=`translate(${dx*s*.05}px,${dy*s*.05}px)`;});});
+  const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('.info-card').forEach((c,i)=>{c.style.transitionDelay=`${i*.1}s`;obs.observe(c);});
+</script>
+</body>
+</html>
