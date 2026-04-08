@@ -176,10 +176,10 @@
       position: relative; z-index: 2;
     }
 
-    /* COMING SOON text */
-    .coming-soon {
+    /* Welcome text */
+    .welcome-msg {
       font-family: 'Baloo 2', cursive;
-      font-size: clamp(3.5rem, 12vw, 7.5rem);
+      font-size: clamp(2.8rem, 9vw, 6rem);
       font-weight: 800;
       background: linear-gradient(135deg, var(--teal) 0%, var(--green-dark) 100%);
       -webkit-background-clip: text;
@@ -190,11 +190,39 @@
       filter: drop-shadow(0 8px 16px rgba(27,154,170,.3));
       animation: shimmer 3s linear infinite;
       background-size: 200% 100%;
+      margin-bottom: 16px;
     }
     @keyframes shimmer {
       0%   { background-position: 0% 50%; }
       50%  { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
+    }
+    .family-intro {
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(8px);
+      border: 2px solid var(--green-mid);
+      border-radius: 20px;
+      padding: 18px 32px;
+      margin: 0 0 18px;
+      position: relative; z-index: 2;
+      text-align: center;
+      font-size: 1.05rem;
+      color: #333;
+      line-height: 1.9;
+      max-width: 420px;
+    }
+    .family-intro strong { color: var(--green-dark); }
+    .orientation-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(90deg, var(--gold), #f9c84a);
+      border-radius: 50px;
+      padding: 10px 28px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--green-dark);
+      box-shadow: 0 6px 20px rgba(244,185,66,.4);
+      position: relative; z-index: 2;
+      margin-top: 4px;
     }
 
     /* ─── INFO CARDS SECTION ───────────────────── */
@@ -362,6 +390,39 @@
       box-shadow: 0 16px 40px rgba(244,185,66,.6);
     }
 
+    /* ─── THANK YOU SECTION ───────────────────────── */
+    #thankyou {
+      background: linear-gradient(160deg, #e8f8f0 0%, #d0f0e4 40%, #c8eef8 100%);
+      padding: 80px 20px;
+      text-align: center;
+    }
+    .ty-star { font-size: 3rem; margin-bottom: 12px; }
+    .ty-title {
+      font-family: 'Baloo 2', cursive;
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: 800;
+      color: var(--green-dark);
+      margin-bottom: 16px;
+    }
+    .ty-body {
+      max-width: 600px;
+      margin: 0 auto 28px;
+      font-size: 1.05rem;
+      color: #444;
+      line-height: 1.75;
+    }
+    .qa-badge {
+      display: inline-block;
+      background: linear-gradient(90deg, var(--green-mid), var(--teal));
+      color: #fff;
+      font-family: 'Baloo 2', cursive;
+      font-size: 1.2rem;
+      font-weight: 700;
+      padding: 14px 40px;
+      border-radius: 50px;
+      box-shadow: 0 8px 28px rgba(45,158,95,.35);
+    }
+
     /* pink bottom bar */
     .notice-bar {
       background: linear-gradient(90deg,#f9b4b4,#f9c8d0);
@@ -464,7 +525,15 @@
     Dale City &bull; Woodbridge
   </div>
 
-  <div class="coming-soon">COMING SOON</div>
+  <div class="welcome-msg">Welcome!</div>
+  <div class="family-intro">
+    <p>A loving family established <strong>FHD</strong></p>
+    <p>Main provider: <strong>Mohammed Reja (H)</strong></p>
+    <p>Assistant Provider: <strong>Fetya Idris (W)</strong></p>
+  </div>
+  <div class="orientation-badge">
+    📅 Now Enrolling &mdash; Orientation was <strong>March 25, 2026</strong>
+  </div>
 </section>
 
 <!-- ─── INFO CARDS ─────────────────────────────────── -->
@@ -474,48 +543,96 @@
 
     <div class="info-card card-green">
       <div class="card-shimmer"></div>
-      <div class="card-icon">🎒</div>
-      <div class="card-title">Ages &amp; Hours</div>
+      <div class="card-icon">🌟</div>
+      <div class="card-title">Why Choose Our Program?</div>
       <div class="card-body">
-        We welcome children aged <strong>3 to 5 years</strong>.<br><br>
-        Open <strong>Monday – Friday</strong><br>
-        <strong>7:00 am – 6:00 pm</strong>
+        A place where your child is loved, guided, and inspired.<br><br>
+        We treat every child like family. Growing hearts, minds, and faith together.<br><br>
+        &bull; Holistic Islamic upbringing<br>
+        &bull; Balanced academic + character development<br>
+        &bull; Play-based and structured learning<br>
+        &bull; Focus on Qur'an, language, math, and manners
+      </div>
+    </div>
+
+    <div class="info-card card-teal">
+      <div class="card-shimmer"></div>
+      <div class="card-icon">📖</div>
+      <div class="card-title">What Your Child Will Achieve</div>
+      <div class="card-body">
+        &bull; Read &amp; memorize short Surahs and daily duas<br><br>
+        &bull; Read simple English words and sentences<br><br>
+        &bull; Recognize Arabic letters and basic words
+      </div>
+    </div>
+
+    <div class="info-card card-gold">
+      <div class="card-shimmer"></div>
+      <div class="card-icon">🌳</div>
+      <div class="card-title">Outdoor Activities</div>
+      <div class="card-body">
+        &bull; Outdoor running / playground<br><br>
+        &bull; Building blocks / creative play<br><br>
+        &bull; Arts &amp; crafts (painting, coloring)
+      </div>
+    </div>
+
+    <div class="info-card card-coral">
+      <div class="card-shimmer"></div>
+      <div class="card-icon">🎨</div>
+      <div class="card-title">Art &amp; Fun</div>
+      <div class="card-body">
+        &bull; Creative &amp; Dramatic Play<br><br>
+        &bull; Physical &amp; Motor Skill Development<br><br>
+        &bull; Art &amp; STEM Exploration
+      </div>
+    </div>
+
+    <div class="info-card card-purple">
+      <div class="card-shimmer"></div>
+      <div class="card-icon">🍎</div>
+      <div class="card-title">Meal</div>
+      <div class="card-body">
+        &bull; No breakfast or lunch provided — <strong>please bring from home</strong><br><br>
+        &bull; <strong>2 snack times/day</strong> (free)<br><br>
+        &bull; Additional <strong>$50</strong> for breakfast or lunch<br>
+        &bull; Additional <strong>$100</strong> for both
+      </div>
+    </div>
+
+    <div class="info-card card-green">
+      <div class="card-shimmer"></div>
+      <div class="card-icon">🛡️</div>
+      <div class="card-title">Health, Safety &amp; Nutrition</div>
+      <div class="card-body">
+        &bull; Sanitized environment<br><br>
+        &bull; Secured premises<br><br>
+        &bull; Halal meals (if served)
       </div>
     </div>
 
     <div class="info-card card-teal">
       <div class="card-shimmer"></div>
       <div class="card-icon">📋</div>
-      <div class="card-title">Limited Spots</div>
+      <div class="card-title">Enrollment &amp; Policies</div>
       <div class="card-body">
-        Only <strong>12 children</strong> are accepted per cohort. Enrollment is on a <strong>first-come, first-served</strong> basis — act fast to secure your child's spot!
+        &bull; Children aged <strong>3–5</strong><br><br>
+        &bull; Parent agreement required<br><br>
+        &bull; <strong>Monday – Friday</strong><br>
+        &bull; <strong>7:00 am – 6:00 pm</strong>
       </div>
     </div>
 
     <div class="info-card card-gold">
       <div class="card-shimmer"></div>
       <div class="card-icon">💰</div>
-      <div class="card-title">Tuition</div>
+      <div class="card-title">Payment &amp; Fees</div>
       <div class="card-body">
-        Fee is <strong>To Be Determined</strong>. We are committed to offering affordable, high-quality early education. Families will be notified of pricing before enrollment opens.
-      </div>
-    </div>
-
-    <div class="info-card card-coral">
-      <div class="card-shimmer"></div>
-      <div class="card-icon">📝</div>
-      <div class="card-title">Interest List</div>
-      <div class="card-body">
-        Add your child to our <strong>interest list today</strong>. We'll contact you directly once <strong>enrollment officially opens</strong> — no need to keep checking back!
-      </div>
-    </div>
-
-    <div class="info-card card-purple">
-      <div class="card-shimmer"></div>
-      <div class="card-icon">📍</div>
-      <div class="card-title">Location</div>
-      <div class="card-body">
-        Conveniently located in <strong>Dale City, Woodbridge</strong>, VA. Exact address will be shared once we open. Stay tuned for updates!
+        &bull; Tuition: <strong>$250 / child / week</strong><br>
+        &bull; Registration fee: <strong>$50</strong><br>
+        &bull; Sibling discount: <strong>10%</strong><br>
+        &bull; Late tuition fee: <strong>$10</strong><br>
+        &bull; Late pick-up: <strong>$1 / minute</strong>
       </div>
     </div>
 
@@ -524,22 +641,30 @@
 
 <!-- ─── ENROLLMENT CTA ─────────────────────────────── -->
 <section id="enroll">
-  <div class="enroll-title">Secure Your Child's Future Today</div>
+  <div class="enroll-title">Secure Your Child's Spot Today</div>
   <p class="enroll-body">
-    With only <strong style="color:#f4b942;">12 spots available</strong>, don't wait! Join the interest list and we'll reach out the moment enrollment opens. Give your child the gift of a nurturing, educational start.
+    <strong style="color:#f4b942;">Children aged 3–5 &bull; M–F 7am–6pm &bull; $250/week</strong><br><br>
+    Don't wait — spots are limited! Reach out today and give your child the gift of a nurturing, Islamic early education.
   </p>
-  <a href="mailto:info@peacelandlc.com?subject=Interest%20List%20-%20Peace%20Land%20Learning%20Center" class="enroll-btn">
-    Join the Interest List &rarr;
+  <a href="mailto:info@peacelandlc.com?subject=Enrollment%20-%20Peace%20Land%20Learning%20Center" class="enroll-btn">
+    Enroll Now &rarr;
   </a>
 </section>
 
 <div class="notice-bar">
-  Only 12 children are accepted &bull; First-come basis &bull; Fee TBD &bull;
-  Add your child to our interest list today &mdash; we'll contact you once enrollment officially opens!
+  $250/week &bull; $50 registration &bull; 10% sibling discount &bull; Ages 3–5 &bull; M–F 7am–6pm &bull; Halal meals &bull; Dale City, Woodbridge VA
 </div>
 
+<!-- ─── THANK YOU / Q&A ────────────────────────────── -->
+<section id="thankyou">
+  <div class="ty-star">🌟</div>
+  <div class="ty-title">Thank You!</div>
+  <p class="ty-body">We are so grateful for your interest in Peace Land Learning Center. We look forward to welcoming your child into our family.</p>
+  <div class="qa-badge">🌟 Q &amp; A — We're here to answer all your questions!</div>
+</section>
+
 <footer>
-  &copy; 2024 <strong>Peace Land Learning Center</strong> &bull; Dale City &bull; Woodbridge, VA
+  &copy; 2026 <strong>Peace Land Learning Center</strong> &bull; Dale City &bull; Woodbridge, VA &bull; FHD Family
 </footer>
 
 <script>
