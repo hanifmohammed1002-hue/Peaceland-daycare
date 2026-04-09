@@ -394,6 +394,50 @@
       box-shadow: 0 16px 40px rgba(244,185,66,.6);
     }
 
+    /* ─── PHOTO GALLERY ───────────────────────────── */
+    #gallery {
+      padding: 80px 20px;
+      background: linear-gradient(180deg, #f5f0e8 0%, #e0f5ea 100%);
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .gallery-item {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(26,107,60,.12), 0 2px 8px rgba(0,0,0,.08);
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s ease;
+      position: relative;
+    }
+    .gallery-item:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 24px 50px rgba(26,107,60,.22), 0 8px 20px rgba(0,0,0,.10);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      display: block;
+    }
+    .gallery-item.wide {
+      grid-column: span 2;
+    }
+    .gallery-caption {
+      background: linear-gradient(135deg, var(--green-dark), var(--teal));
+      color: #fff;
+      padding: 12px 18px;
+      font-weight: 700;
+      font-size: .95rem;
+      text-align: center;
+    }
+    @media(max-width:700px) {
+      .gallery-item.wide { grid-column: span 1; }
+    }
+
     /* ─── THANK YOU SECTION ───────────────────────── */
     #thankyou {
       background: linear-gradient(160deg, #e8f8f0 0%, #d0f0e4 40%, #c8eef8 100%);
@@ -624,6 +668,49 @@
         &bull; Late tuition fee: <strong>$10</strong><br>
         &bull; Late pick-up: <strong>$1 / minute</strong>
       </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── PHOTO GALLERY ──────────────────────────────── -->
+<section id="gallery">
+  <h2 class="section-title">Our Family &amp; Program</h2>
+  <div class="gallery-grid">
+
+    <div class="gallery-item wide">
+      <img src="family.png" alt="Our Family" />
+      <div class="gallery-caption">Our Loving Family — The Heart of FHD</div>
+    </div>
+
+    <div class="gallery-item">
+      <img src="kids-learning.png" alt="Kids Learning" />
+      <div class="gallery-caption">Learning &amp; Growing Together</div>
+    </div>
+
+    <div class="gallery-item">
+      <img src="classroom.png" alt="Classroom Activities" />
+      <div class="gallery-caption">Creative &amp; Play-Based Classroom</div>
+    </div>
+
+    <div class="gallery-item">
+      <img src="room.png" alt="Our Space" />
+      <div class="gallery-caption">Our Clean &amp; Welcoming Space</div>
+    </div>
+
+    <div class="gallery-item">
+      <img src="activities.png" alt="Activities" />
+      <div class="gallery-caption">Mealtime &amp; Daily Activities</div>
+    </div>
+
+    <div class="gallery-item">
+      <img src="policy.png" alt="Enrollment Policy" />
+      <div class="gallery-caption">Enrollment Policy &amp; Parent Handbook</div>
+    </div>
+
+    <div class="gallery-item">
+      <img src="tuition.png" alt="Tuition & Fees" />
+      <div class="gallery-caption">Tuition &amp; Fees</div>
     </div>
 
   </div>
